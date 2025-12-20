@@ -167,11 +167,30 @@
     }
 
     /* ===== Theme Switcher ===== */
-    .theme-controls {
-    position: absolute; /* Fixed ki jagah */
-    top: var(--space-md);
-    right: var(--space-md);
-    /* Baki sab same rahega */
+    /* ===== Vertical Left Theme Switcher ===== */
+.theme-controls {
+    position: fixed;
+    /* Left side par lane ke liye */
+    left: var(--space-md); 
+    
+    /* Screen ke bilkul beech mein (vertical center) karne ke liye */
+    top: 50%;
+    transform: translateY(-50%);
+    
+    z-index: 1000;
+    
+    /* Buttons ko upar-neeche (vertical) karne ke liye */
+    display: flex;
+    flex-direction: column; 
+    align-items: center; /* Buttons ko center align karne ke liye */
+    
+    gap: var(--space-xs);
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 50px; /* Capsule shape */
+    padding: var(--space-md) var(--space-xs); /* Upar-neeche thoda zyada padding */
+    box-shadow: var(--shadow-lg);
 }
 
     .theme-btn {
