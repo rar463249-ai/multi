@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalcMatrix Pro | Advanced Calculation Suite</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<style>
+    /* ===== CSS Variables & Theme System ===== */
+    :root {
+        /* Primary Colors - Matrix Theme */
+        --matrix-primary: #00ff88;
+        --matrix-secondary: #00ccff;
+        --matrix-accent: #ff2a6d;
+        
+        /* Backgrounds */
+        --bg-primary: #0a1929;
+        --bg-secondary: #112240;
+        --bg-tertiary: #1a365d;
+        --bg-card: rgba(17, 34, 64, 0.95);
+        
+        /* Text Colors */
+        --text-primary: #e6f1ff;
+        --text-secondary: #a8b2d1;
+        --text-muted: #8892b0;
+        
+        /* Borders & Shadows */
+        --border-color: rgba(0, 204, 255, 0.2);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+        --shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
+        
+        /* Gradients */
+        --gradient-primary: linear-gradient(135deg, var(--matrix-primary), var(--matrix-secondary));
+        --gradient-dark: linear-gradient(135deg, var(--bg-primary), var(--bg-tertiary));
+        
+        /* Transitions */
+        --transition-fast: 0.2s ease;
+        --transition-base: 0.3s ease;
+        --transition-slow: 0.5s ease;
+        
+        /* Spacing */
+        --space-xs: 0.5rem;
+        --space-sm: 1rem;
+        --space-md: 2rem;
+        --space-lg: 3rem;
+        --space-xl: 4rem;
+    }
+
+    /* Theme Variations */
+    .theme-neon {
+        --matrix-primary: #ff00ff;
+        --matrix-secondary: #00ffff;
+        --matrix-accent: #ffff00;
+        --bg-primary: #0a0a1a;
+        --bg-secondary: #1a1a2e;
+        --bg-tertiary: #2a2a3e;
+    }
+    
+    .theme-aurora {
+        --matrix-primary: #8a2be2;
+        --matrix-secondary: #00bfff;
+        --matrix-accent: #ff69b4;
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-tertiary: #2d3748;
+    }
+    
+    .theme-solar {
+        --matrix-primary: #ff7e00;
+        --matrix-secondary: #ffd700;
+        --matrix-accent: #ff4500;
+        --bg-primary: #1c1c1c;
+        --bg-secondary: #2d2d2d;
+        --bg-tertiary: #3d3d3d;
+    }
+    
+    .theme-ocean {
+        --matrix-primary: #00ced1;
+        --matrix-secondary: #20b2aa;
+        --matrix-accent: #ff6b6b;
+        --bg-primary: #001f3f;
+        --bg-secondary: #003366;
+        --bg-tertiary: #004080;
+    }
+
+    /* ===== Base & Reset ===== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+        transition: background var(--transition-base);
+        min-height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 var(--space-md);
+    }
+
+    /* ===== Typography ===== */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: var(--space-sm);
+    }
+
+    h1 {
+        font-size: 3.5rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+    }
+
+    h2 {
+        font-size: 2.5rem;
+        position: relative;
+        display: inline-block;
+        margin-bottom: var(--space-lg);
+    }
+
+    h2:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+    }
+
+    .lead-text {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* ===== Theme Switcher ===== */
+    .theme-controls {
+        position: fixed;
+        top: var(--space-md);
+        right: var(--space-md);
+        z-index: 1000;
+        display: flex;
+        gap: var(--space-xs);
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 50px;
+        padding: var(--space-xs);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .theme-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        background: var(--bg-secondary);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .theme-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-glow);
+    }
+
+    .theme-btn.active {
+        border-color: var(--matrix-primary);
+        box-shadow: var(--shadow-glow);
+    }
+
+    .theme-btn[data-theme="matrix"] {
+        background: linear-gradient(135deg, #00ff88, #00ccff);
+    }
+
+    .theme-btn[data-theme="neon"] {
+        background: linear-gradient(135deg, #ff00ff, #00ffff);
+    }
+
+    .theme-btn[data-theme="aurora"] {
+        background: linear-gradient(135deg, #8a2be2, #00bfff);
+    }
+
+    .theme-btn[data-theme="solar"] {
+        background: linear-gradient(135deg, #ff7e00, #ffd700);
+    }
+
+    .theme-btn[data-theme="ocean"] {
+        background: linear-gradient(135deg, #00ced1, #20b2aa);
+    }
+
+    .theme-label {
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity var(--transition-base);
+    }
+
+    .theme-btn:hover .theme-label {
+        opacity: 1;
+    }
+
+    /* ===== Header & Navigation ===== */
+    .main-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        background: rgba(10, 25, 41, 0.9);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 0;
+        transition: all var(--transition-base);
+    }
+
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        text-decoration: none;
+        z-index: 1001;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--bg-primary);
+    }
+
+    .logo-text {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    /* Mobile Menu Fix */
+    .main-nav {
+        display: flex;
+        gap: var(--space-md);
+        align-items: center;
+    }
+
+    .nav-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: 8px;
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-link:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: var(--gradient-primary);
+        transition: all var(--transition-base);
+        transform: translateX(-50%);
+    }
+
+    .nav-link:hover {
+        color: var(--text-primary);
+    }
+
+    .nav-link:hover:before {
+        width: 100%;
+    }
+
+    .nav-cta {
+        background: var(--gradient-primary);
+        color: var(--bg-primary) !important;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all var(--transition-base);
+    }
+
+    .nav-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-glow);
+    }
+
+    /* Mobile Menu Styles */
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 1001;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--transition-base);
+    }
+
+    .mobile-menu-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Mobile Navigation */
+    @media (max-width: 768px) {
+        .main-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            flex-direction: column;
+            padding: 6rem var(--space-lg) var(--space-lg);
+            box-shadow: var(--shadow-lg);
+            transition: right var(--transition-base);
+            z-index: 1000;
+            overflow-y: auto;
+            justify-content: flex-start;
+            gap: var(--space-md);
+        }
+
+        .main-nav.active {
+            right: 0;
+        }
+
+        .nav-link {
+            width: 100%;
+            text-align: center;
+            padding: var(--space-sm);
+            font-size: 1.1rem;
+        }
+
+        .nav-cta {
+            width: 100%;
+            text-align: center;
+            margin-top: var(--space-sm);
+        }
+
+        .mobile-menu-btn {
+            display: flex;
+        }
+
+        /* Overlay when menu is open */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-base);
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+
+    /* ===== Hero Section ===== */
+    .hero-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding-top: 100px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(0, 204, 255, 0.1) 0%, transparent 50%);
+        z-index: -1;
+    }
+
+    .hero-content {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hero-tagline {
+        font-size: 1.25rem;
+        color: var(--matrix-primary);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: var(--space-sm);
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-xl);
+        margin: var(--space-lg) 0;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 3rem;
+        font-weight: 700;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: var(--space-xs);
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: var(--space-sm);
+        justify-content: center;
+        margin-top: var(--space-lg);
+    }
+
+    .btn {
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all var(--transition-base);
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: var(--gradient-primary);
+        color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-glow);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--matrix-primary);
+        transform: translateY(-3px);
+    }
+
+    /* ===== Calculators Grid ===== */
+    .calculators-section {
+        padding: var(--space-xl) 0;
+        position: relative;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: var(--space-xl);
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .category-filter {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-lg);
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 0.75rem 1.5rem;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 50px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        font-weight: 500;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: var(--gradient-primary);
+        color: var(--bg-primary);
+        border-color: transparent;
+        transform: translateY(-2px);
+    }
+
+    .calculators-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: var(--space-md);
+        margin-bottom: var(--space-xl);
+    }
+
+    .calc-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        padding: var(--space-lg);
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+    }
+
+    .calc-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: opacity var(--transition-base);
+        z-index: 0;
+    }
+
+    .calc-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--matrix-primary);
+        box-shadow: var(--shadow-glow);
+    }
+
+    .calc-card:hover:before {
+        opacity: 0.05;
+    }
+
+    .calc-card-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .calc-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--bg-tertiary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: var(--space-md);
+        font-size: 1.5rem;
+        color: var(--matrix-primary);
+        transition: all var(--transition-base);
+    }
+
+    .calc-card:hover .calc-icon {
+        background: var(--gradient-primary);
+        color: var(--bg-primary);
+        transform: rotate(5deg) scale(1.1);
+    }
+
+    .calc-tags {
+        display: flex;
+        gap: var(--space-xs);
+        margin-top: var(--space-md);
+    }
+
+    .calc-tag {
+        padding: 0.25rem 0.75rem;
+        background: var(--bg-tertiary);
+        border-radius: 50px;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        transition: all var(--transition-base);
+    }
+
+    .calc-card:hover .calc-tag {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+    }
+
+    /* ===== Content Section ===== */
+    .content-section {
+        padding: var(--space-xl) 0;
+        background: var(--bg-secondary);
+        position: relative;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: var(--space-xl);
+        align-items: start;
+    }
+
+    .content-main {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: var(--space-xl);
+        border: 1px solid var(--border-color);
+    }
+
+    .content-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    .sidebar-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        padding: var(--space-lg);
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-base);
+    }
+
+    .sidebar-card:hover {
+        border-color: var(--matrix-primary);
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--gradient-primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: var(--space-md);
+        font-size: 1.25rem;
+        color: var(--bg-primary);
+    }
+
+    /* ===== Modal ===== */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 2000;
+        opacity: 0;
+        transition: opacity var(--transition-base);
+        padding: var(--space-sm);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.show {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-content {
+        background: var(--bg-card);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        transform: translateY(20px);
+        transition: transform var(--transition-base);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal.show .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal-header {
+        padding: var(--space-lg);
+        background: var(--bg-tertiary);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: color var(--transition-base);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    .modal-close:hover {
+        color: var(--text-primary);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-tabs {
+        display: flex;
+        background: var(--bg-tertiary);
+        border-bottom: 1px solid var(--border-color);
+        overflow-x: auto;
+        flex-shrink: 0;
+    }
+
+    .modal-tab {
+        padding: 1rem 1.5rem;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+        transition: all var(--transition-base);
+        font-weight: 500;
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .modal-tab:hover,
+    .modal-tab.active {
+        color: var(--matrix-primary);
+        border-bottom-color: var(--matrix-primary);
+    }
+
+    .modal-body {
+        padding: var(--space-lg);
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* ===== Calculator Form ===== */
+    .calculator-form {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: var(--space-md);
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: var(--space-xs);
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 1rem;
+        transition: all var(--transition-base);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--matrix-primary);
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+    }
+
+    .calc-actions {
+        display: flex;
+        gap: var(--space-sm);
+        margin-top: var(--space-lg);
+    }
+
+    .calc-result {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: var(--space-lg);
+        margin-top: var(--space-lg);
+        display: none;
+    }
+
+    .calc-result.show {
+        display: block;
+        animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .result-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--matrix-primary);
+        margin: var(--space-sm) 0;
+    }
+
+    /* ===== Footer ===== */
+    .main-footer {
+        background: var(--bg-tertiary);
+        padding: var(--space-xl) 0;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-xl);
+        margin-bottom: var(--space-xl);
+    }
+
+    .footer-brand .logo {
+        margin-bottom: var(--space-md);
+    }
+
+    .footer-text {
+        color: var(--text-secondary);
+        margin-bottom: var(--space-md);
+    }
+
+    .social-links {
+        display: flex;
+        gap: var(--space-sm);
+    }
+
+    .social-link {
+        width: 40px;
+        height: 40px;
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all var(--transition-base);
+    }
+
+    .social-link:hover {
+        background: var(--gradient-primary);
+        color: var(--bg-primary);
+        transform: translateY(-3px);
+    }
+
+    .footer-links h4 {
+        color: var(--text-primary);
+        margin-bottom: var(--space-md);
+        font-size: 1.1rem;
+    }
+
+    .footer-links ul {
+        list-style: none;
+    }
+
+    .footer-links li {
+        margin-bottom: var(--space-xs);
+    }
+
+    .footer-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color var(--transition-base);
+        display: block;
+        padding: 0.25rem 0;
+    }
+
+    .footer-links a:hover {
+        color: var(--matrix-primary);
+    }
+
+    .footer-bottom {
+        padding-top: var(--space-md);
+        border-top: 1px solid var(--border-color);
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+    }
+
+    /* ===== Responsive Design ===== */
+    @media (max-width: 1200px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .content-sidebar {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: grid;
+            order: -1;
+        }
+    }
+
+    @media (max-width: 992px) {
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        .hero-stats {
+            gap: var(--space-lg);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+        }
+        
+        .theme-controls {
+            top: var(--space-sm);
+            right: var(--space-sm);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 var(--space-sm);
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+        }
+        
+        .hero-stats {
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+        
+        .hero-cta {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .calculators-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .modal-content {
+            width: 95%;
+            margin: 0 auto;
+        }
+        
+        .modal-tab {
+            min-width: 100px;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .theme-controls {
+            flex-direction: column;
+            padding: 0.5rem;
+            border-radius: 20px;
+        }
+        
+        .theme-btn {
+            width: 35px;
+            height: 35px;
+        }
+        
+        .category-filter {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .filter-btn {
+            width: 100%;
+            max-width: 200px;
+        }
+        
+        .modal-header,
+        .modal-body {
+            padding: var(--space-md);
+        }
+        
+        .calc-actions {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+
+    /* ===== Animation Classes ===== */
+    .fade-in {
+        animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(0, 255, 136, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(0, 255, 136, 0);
+        }
+    }
+
+    /* ===== Utility Classes ===== */
+    .text-gradient {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .glow-text {
+        text-shadow: 0 0 20px currentColor;
+    }
+
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+</style>
+<body class="theme-matrix">
+    <!-- Theme Switcher -->
+    <div class="theme-controls">
+        <button class="theme-btn active" data-theme="matrix" title="Matrix Theme">
+            <span class="theme-label">Matrix</span>
+        </button>
+        <button class="theme-btn" data-theme="neon" title="Neon Theme">
+            <span class="theme-label">Neon</span>
+        </button>
+        <button class="theme-btn" data-theme="aurora" title="Aurora Theme">
+            <span class="theme-label">Aurora</span>
+        </button>
+        <button class="theme-btn" data-theme="solar" title="Solar Theme">
+            <span class="theme-label">Solar</span>
+        </button>
+        <button class="theme-btn" data-theme="ocean" title="Ocean Theme">
+            <span class="theme-label">Ocean</span>
+        </button>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="nav-container">
+                <a href="#home" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <span class="logo-text">CalcMatrix Pro</span>
+                </a>
+                
+                <nav class="main-nav" id="mainNav">
+                    <a href="#home" class="nav-link">Home</a>
+                    <a href="#calculators" class="nav-link">Calculators</a>
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#" class="nav-link nav-cta" onclick="openModal('contact')">Contact</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="hero-content">
+                <p class="hero-tagline">Advanced Calculation Suite</p>
+                <h1>Precision Calculations,<br>Unlimited Possibilities</h1>
+                <p class="lead-text">Experience the future of computation with our AI-powered calculator suite designed for professionals, students, and everyone in between.</p>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">35+</span>
+                        <span class="stat-label">Tools</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Free</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">0</span>
+                        <span class="stat-label">Registration</span>
+                    </div>
+                </div>
+                
+                <div class="hero-cta">
+                    <a href="#calculators" class="btn btn-primary">Explore Calculators</a>
+                    <a href="#" class="btn btn-secondary" onclick="openModal('about')">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculators Section -->
+    <section id="calculators" class="calculators-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Professional Calculation Tools</h2>
+                <p class="section-subtitle">Choose from our comprehensive collection of specialized calculators</p>
+            </div>
+            
+            <div class="category-filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="finance">Finance</button>
+                <button class="filter-btn" data-filter="health">Health</button>
+                <button class="filter-btn" data-filter="math">Mathematics</button>
+                <button class="filter-btn" data-filter="business">Business</button>
+                <button class="filter-btn" data-filter="conversion">Conversion</button>
+            </div>
+            
+            <div class="calculators-grid">
+                <!-- Finance Calculators -->
+                <div class="calc-card" data-calc="loan" data-category="finance">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <h3>Loan Calculator</h3>
+                        <p>Calculate monthly payments, interest rates, and loan amortization schedules with precision.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Finance</span>
+                            <span class="calc-tag">Planning</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calc-card" data-calc="mortgage" data-category="finance">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <h3>Mortgage Calculator</h3>
+                        <p>Plan your home purchase with detailed mortgage payment calculations and interest analysis.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Real Estate</span>
+                            <span class="calc-tag">Finance</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Health Calculators -->
+                <div class="calc-card" data-calc="bmi" data-category="health">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-weight"></i>
+                        </div>
+                        <h3>BMI Calculator</h3>
+                        <p>Calculate Body Mass Index with detailed health category analysis and recommendations.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Health</span>
+                            <span class="calc-tag">Fitness</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calc-card" data-calc="calorie" data-category="health">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h3>Calorie Calculator</h3>
+                        <p>Determine daily calorie needs based on activity level, goals, and personal metrics.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Health</span>
+                            <span class="calc-tag">Nutrition</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Math Calculators -->
+                <div class="calc-card" data-calc="percentage" data-category="math">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <h3>Percentage Calculator</h3>
+                        <p>Calculate percentages, increases, decreases, and percentage differences instantly.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Math</span>
+                            <span class="calc-tag">Essential</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calc-card" data-calc="compound" data-category="finance">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Compound Interest</h3>
+                        <p>Calculate investment growth with compound interest and visualize your financial future.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Finance</span>
+                            <span class="calc-tag">Investment</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Business Calculators -->
+                <div class="calc-card" data-calc="profit" data-category="business">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h3>Profit Margin</h3>
+                        <p>Calculate profit margins, markup percentages, and business profitability metrics.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Business</span>
+                            <span class="calc-tag">Sales</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calc-card" data-calc="gst" data-category="business">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <h3>GST Calculator</h3>
+                        <p>Calculate GST amounts, tax-inclusive prices, and manage business tax calculations.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Business</span>
+                            <span class="calc-tag">Tax</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conversion Calculators -->
+                <div class="calc-card" data-calc="unit" data-category="conversion">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3>Unit Converter</h3>
+                        <p>Convert between hundreds of measurement units across different categories instantly.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Conversion</span>
+                            <span class="calc-tag">Tools</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calc-card" data-calc="currency" data-category="finance">
+                    <div class="calc-card-content">
+                        <div class="calc-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3>Currency Converter</h3>
+                        <p>Convert between world currencies with real-time exchange rates and historical data.</p>
+                        <div class="calc-tags">
+                            <span class="calc-tag">Finance</span>
+                            <span class="calc-tag">Conversion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-main">
+                    <h2>Why Choose CalcMatrix Pro?</h2>
+                    <p>CalcMatrix Pro represents the next generation of calculation tools, combining advanced mathematical algorithms with an intuitive, modern interface designed for professionals and casual users alike.</p>
+                    
+                    <h3>Advanced Technology</h3>
+                    <p>Our platform utilizes cutting-edge computational engines that deliver results with scientific precision. Every calculator is built with multiple validation layers to ensure accuracy in every calculation.</p>
+                    
+                    <h3>Privacy First</h3>
+                    <p>Unlike many online tools, CalcMatrix Pro operates entirely in your browser. Your data never leaves your device, ensuring complete privacy for sensitive financial and personal information.</p>
+                    
+                    <h3>Professional Grade</h3>
+                    <p>From simple arithmetic to complex financial modeling, our tools meet professional standards. Each calculator includes detailed explanations, multiple calculation modes, and comprehensive result analysis.</p>
+                    
+                    <h3>Continuous Innovation</h3>
+                    <p>We regularly update our calculator suite based on user feedback and technological advancements. Our development roadmap includes AI-powered calculations and enhanced visualization tools.</p>
+                </div>
+                
+                <div class="content-sidebar">
+                    <div class="sidebar-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h4>Instant Results</h4>
+                        <p>Get calculations in milliseconds with our optimized processing engine.</p>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>100% Secure</h4>
+                        <p>All calculations happen locally on your device. No data is ever transmitted.</p>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>Mobile Optimized</h4>
+                        <p>Fully responsive design that works perfectly on all devices and screen sizes.</p>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <h4>Always Free</h4>
+                        <p>Complete access to all professional tools without any costs or subscriptions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#home" class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <span class="logo-text">CalcMatrix Pro</span>
+                    </a>
+                    <p class="footer-text">Advanced calculation tools for modern professionals. Precision, privacy, and performance.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#calculators">All Calculators</a></li>
+                        <li><a href="#" onclick="openModal('about')">About Us</a></li>
+                        <li><a href="#" onclick="openModal('contact')">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Popular Tools</h4>
+                    <ul>
+                        <li><a href="#" onclick="openCalculator('loan')">Loan Calculator</a></li>
+                        <li><a href="#" onclick="openCalculator('bmi')">BMI Calculator</a></li>
+                        <li><a href="#" onclick="openCalculator('percentage')">Percentage Calculator</a></li>
+                        <li><a href="#" onclick="openCalculator('compound')">Compound Interest</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#" onclick="openModal('privacy')">Privacy Policy</a></li>
+                        <li><a href="#" onclick="openModal('terms')">Terms of Service</a></li>
+                        <li><a href="#" onclick="openModal('disclaimer')">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 CalcMatrix Pro. All rights reserved. Made with <i class="fas fa-heart" style="color: var(--matrix-accent);"></i> for the global community.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Calculator</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            
+            <div class="modal-tabs">
+                <button class="modal-tab active" data-tab="calculator">Calculator</button>
+                <button class="modal-tab" data-tab="about">About</button>
+                <button class="modal-tab" data-tab="contact">Contact</button>
+                <button class="modal-tab" data-tab="privacy">Privacy</button>
+                <button class="modal-tab" data-tab="disclaimer">Disclaimer</button>
+                <button class="modal-tab" data-tab="terms">Terms</button>
+            </div>
+
+            <div class="modal-body">
+                <div id="calculator-content" class="tab-content active">
+                    <!-- Calculator content will be inserted here -->
+                </div>
+
+                <div id="about-content" class="tab-content">
+                    <h3>About CalcMatrix Pro</h3>
+                    <p>CalcMatrix Pro is a cutting-edge calculation platform designed for the modern digital era. We combine advanced computational algorithms with an intuitive user interface to deliver professional-grade calculation tools that are accessible to everyone.</p>
+                    
+                    <h4>Our Mission</h4>
+                    <p>To democratize access to professional calculation tools by providing a free, secure, and comprehensive suite of calculators that meets the needs of students, professionals, and businesses worldwide.</p>
+                    
+                    <h4>Key Features</h4>
+                    <ul>
+                        <li><strong>35+ Specialized Calculators</strong> covering finance, health, mathematics, and more</li>
+                        <li><strong>Enterprise-grade Accuracy</strong> with multi-layer validation systems</li>
+                        <li><strong>Zero Data Collection</strong> - all calculations happen locally on your device</li>
+                        <li><strong>Mobile-First Design</strong> optimized for all screen sizes</li>
+                        <li><strong>Completely Free</strong> with no hidden costs or premium tiers</li>
+                    </ul>
+                    
+                    <h4>Technology Stack</h4>
+                    <p>Built with modern web technologies including advanced JavaScript algorithms, CSS3 animations, and HTML5 standards. Our platform is constantly updated to incorporate the latest web standards and security protocols.</p>
+                </div>
+
+                <div id="contact-content" class="tab-content">
+                    <h3>Contact Us</h3>
+                    <p>We're here to help! Reach out to our team for support, suggestions, or collaboration opportunities.</p>
+                    
+                    <div class="contact-info">
+                        <p><strong><i class="fas fa-envelope"></i> Email:</strong> support@calcmatrixpro.com</p>
+                        <p><strong><i class="fas fa-phone"></i> Support:</strong> +1 (555) 123-4567</p>
+                        <p><strong><i class="fas fa-clock"></i> Hours:</strong> Monday-Friday, 9:00 AM - 6:00 PM EST</p>
+                        <p><strong><i class="fas fa-map-marker-alt"></i> Location:</strong> Digital HQ - Remote First</p>
+                    </div>
+                    
+                    <h4>Technical Support</h4>
+                    <p>For technical issues, please include details about your browser, device, and the specific calculator you're using. We typically respond within 24 hours.</p>
+                    
+                    <h4>Feature Requests</h4>
+                    <p>Have an idea for a new calculator or feature? We'd love to hear from you! Our development team reviews all suggestions monthly.</p>
+                </div>
+
+                <div id="privacy-content" class="tab-content">
+                    <h3>Privacy Policy</h3>
+                    <p><strong>Last Updated:</strong> December 2024</p>
+                    
+                    <h4>Our Privacy Commitment</h4>
+                    <p>CalcMatrix Pro is built on a foundation of privacy. We believe your calculation data is personal and should remain private.</p>
+                    
+                    <h4>No Data Collection</h4>
+                    <p>We do not collect, store, or transmit any personal information or calculation data. All processing happens locally in your browser.</p>
+                    
+                    <h4>Cookies</h4>
+                    <p>We only use essential cookies for theme preference storage. No tracking or analytics cookies are employed.</p>
+                    
+                    <h4>Third-Party Services</h4>
+                    <p>We do not integrate with third-party analytics, advertising, or tracking services of any kind.</p>
+                    
+                    <h4>Contact</h4>
+                    <p>For privacy-related inquiries: privacy@calcmatrixpro.com</p>
+                </div>
+
+                <div id="disclaimer-content" class="tab-content">
+                    <h3>Disclaimer</h3>
+                    <p><strong>Accuracy Disclaimer:</strong> While we strive for precision, CalcMatrix Pro provides tools for informational purposes only. Results should be verified for critical applications.</p>
+                    
+                    <p><strong>Professional Advice:</strong> Our calculators do not replace professional financial, medical, or legal advice. Always consult qualified professionals for important decisions.</p>
+                    
+                    <p><strong>Limitation of Liability:</strong> CalcMatrix Pro shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use of our tools.</p>
+                    
+                    <p><strong>Service Availability:</strong> We strive for 99.9% uptime but cannot guarantee uninterrupted service availability.</p>
+                    
+                    <p><strong>Updates & Changes:</strong> We reserve the right to modify or discontinue any calculator without prior notice.</p>
+                </div>
+
+                <div id="terms-content" class="tab-content">
+                    <h3>Terms of Service</h3>
+                    <p><strong>Last Updated:</strong> December 2024</p>
+                    
+                    <h4>Acceptance of Terms</h4>
+                    <p>By using CalcMatrix Pro, you agree to these Terms of Service and our Privacy Policy.</p>
+                    
+                    <h4>License Grant</h4>
+                    <p>We grant you a limited, non-exclusive, non-transferable license to use our calculators for personal and commercial purposes.</p>
+                    
+                    <h4>Restrictions</h4>
+                    <ul>
+                        <li>Do not attempt to reverse engineer or decompile our calculators</li>
+                        <li>Do not use our services for illegal activities</li>
+                        <li>Do not overload our infrastructure with automated requests</li>
+                    </ul>
+                    
+                    <h4>Modifications</h4>
+                    <p>We may modify these terms at any time. Continued use constitutes acceptance of updated terms.</p>
+                    
+                    <h4>Governing Law</h4>
+                    <p>These terms are governed by applicable international laws and regulations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== Global Variables =====
+        let currentCalculator = '';
+        let currentTheme = 'matrix';
+
+        // ===== Theme Management =====
+        function initTheme() {
+            // Load saved theme
+            const savedTheme = localStorage.getItem('calcmatrix-theme') || 'matrix';
+            setTheme(savedTheme);
+            
+            // Add event listeners to theme buttons
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const theme = this.getAttribute('data-theme');
+                    setTheme(theme);
+                });
+            });
+        }
+
+        function setTheme(themeName) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-matrix', 'theme-neon', 'theme-aurora', 'theme-solar', 'theme-ocean');
+            
+            // Add new theme class
+            document.body.classList.add(`theme-${themeName}`);
+            
+            // Update active button
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-theme') === themeName) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('calcmatrix-theme', themeName);
+            currentTheme = themeName;
+        }
+
+        // ===== Mobile Menu =====
+        function initMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mainNav = document.getElementById('mainNav');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            if (mobileMenuBtn && mainNav) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mainNav.classList.toggle('active');
+                    menuOverlay.classList.toggle('active');
+                    document.body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
+                });
+                
+                // Close menu when clicking overlay
+                menuOverlay.addEventListener('click', function() {
+                    mainNav.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+                
+                // Close menu when clicking nav links
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mainNav.classList.remove('active');
+                        menuOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+            }
+        }
+
+        // ===== Calculator Filtering =====
+        function initCalculatorFilter() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const calcCards = document.querySelectorAll('.calc-card');
+            
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Filter calculator cards
+                    calcCards.forEach(card => {
+                        const category = card.getAttribute('data-category');
+                        
+                        if (filter === 'all' || category === filter) {
+                            card.style.display = 'block';
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 10);
+                        } else {
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(20px)';
+                            setTimeout(() => {
+                                card.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+        }
+
+        // ===== Modal Management =====
+        function initModal() {
+            const modal = document.getElementById('modal');
+            const modalClose = document.getElementById('modalClose');
+            const modalTabs = document.querySelectorAll('.modal-tab');
+            const modalOverlay = modal;
+            
+            // Close modal when clicking close button
+            if (modalClose) {
+                modalClose.addEventListener('click', closeModal);
+            }
+            
+            // Close modal when clicking outside
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // Tab switching
+            modalTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+            
+            // Close with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('show')) {
+                    closeModal();
+                }
+            });
+        }
+
+        function openCalculator(calcType) {
+            currentCalculator = calcType;
+            const calcData = getCalculatorData(calcType);
+            
+            if (!calcData) {
+                console.error(`Calculator data not found for: ${calcType}`);
+                return;
+            }
+            
+            const modalTitle = document.getElementById('modal-title');
+            const calculatorContent = document.getElementById('calculator-content');
+            
+            modalTitle.textContent = calcData.title;
+            calculatorContent.innerHTML = calcData.html;
+            
+            showModal();
+            switchTab('calculator');
+            
+            // Initialize calculator-specific functionality
+            if (calcType === 'percentage') {
+                updatePercentageMode();
+            }
+        }
+
+        function openModal(tabName) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            
+            // Set appropriate title
+            const titles = {
+                about: 'About Us',
+                contact: 'Contact Us',
+                privacy: 'Privacy Policy',
+                disclaimer: 'Disclaimer',
+                terms: 'Terms of Service'
+            };
+            
+            modalTitle.textContent = titles[tabName] || 'Information';
+            showModal();
+            switchTab(tabName);
+        }
+
+        function showModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+            
+            // Reset any calculator results
+            document.querySelectorAll('.calc-result').forEach(result => {
+                result.classList.remove('show');
+            });
+        }
+
+        function switchTab(tabName) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.modal-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Add active class to selected tab and content
+            const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+            const activeContent = document.getElementById(`${tabName}-content`);
+            
+            if (activeTab) activeTab.classList.add('active');
+            if (activeContent) activeContent.classList.add('active');
+        }
+
+        // ===== Calculator Data =====
+        function getCalculatorData(calcType) {
+            const calculators = {
+                loan: {
+                    title: "Loan Calculator",
+                    html: `
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label class="form-label" for="loan-amount">Loan Amount ($)</label>
+                                <input type="number" id="loan-amount" class="form-input" placeholder="Enter loan amount" min="0" step="100">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="interest-rate">Annual Interest Rate (%)</label>
+                                <input type="number" id="interest-rate" class="form-input" placeholder="Enter interest rate" min="0" max="100" step="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="loan-term">Loan Term (Years)</label>
+                                <input type="number" id="loan-term" class="form-input" placeholder="Enter loan term" min="1" max="50" step="1">
+                            </div>
+                            
+                            <div class="calc-actions">
+                                <button class="btn btn-primary" onclick="calculateLoan()">Calculate</button>
+                                <button class="btn btn-secondary" onclick="resetCalculator()">Reset</button>
+                            </div>
+                            
+                            <div id="loan-result" class="calc-result">
+                                <h3>Loan Calculation Result</h3>
+                                <p>Monthly Payment: <span class="result-value" id="monthly-payment"></span></p>
+                                <p>Total Interest: <span id="total-interest"></span></p>
+                                <p>Total Payment: <span id="total-payment"></span></p>
+                            </div>
+                        </div>
+                    `
+                },
+                bmi: {
+                    title: "BMI Calculator",
+                    html: `
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label class="form-label" for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" class="form-input" placeholder="Enter your weight" min="20" max="300" step="0.1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="height">Height (cm)</label>
+                                <input type="number" id="height" class="form-input" placeholder="Enter your height" min="50" max="250" step="0.1">
+                            </div>
+                            
+                            <div class="calc-actions">
+                                <button class="btn btn-primary" onclick="calculateBMI()">Calculate BMI</button>
+                                <button class="btn btn-secondary" onclick="resetCalculator()">Reset</button>
+                            </div>
+                            
+                            <div id="bmi-result" class="calc-result">
+                                <h3>BMI Result</h3>
+                                <p>Your BMI: <span class="result-value" id="bmi-value"></span></p>
+                                <p>Category: <span id="bmi-category"></span></p>
+                                <p>Health Status: <span id="bmi-status"></span></p>
+                            </div>
+                        </div>
+                    `
+                },
+                percentage: {
+                    title: "Percentage Calculator",
+                    html: `
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label class="form-label">What do you want to calculate?</label>
+                                <select id="percentage-mode" class="form-input" onchange="updatePercentageMode()">
+                                    <option value="percent-of">What is X% of Y?</option>
+                                    <option value="what-percent">X is what % of Y?</option>
+                                    <option value="percentage-change">Percentage change from X to Y</option>
+                                </select>
+                            </div>
+                            
+                            <div id="percentage-inputs">
+                                <div class="form-group">
+                                    <label class="form-label" id="label-1">Percentage (%)</label>
+                                    <input type="number" id="input-1" class="form-input" placeholder="Enter value" step="0.01">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" id="label-2">Base Value</label>
+                                    <input type="number" id="input-2" class="form-input" placeholder="Enter base value" step="0.01">
+                                </div>
+                            </div>
+                            
+                            <div class="calc-actions">
+                                <button class="btn btn-primary" onclick="calculatePercentage()">Calculate</button>
+                                <button class="btn btn-secondary" onclick="resetCalculator()">Reset</button>
+                            </div>
+                            
+                            <div id="percentage-result" class="calc-result">
+                                <h3>Result</h3>
+                                <p class="result-value" id="percentage-answer"></p>
+                            </div>
+                        </div>
+                    `
+                },
+                compound: {
+                    title: "Compound Interest Calculator",
+                    html: `
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label class="form-label" for="principal">Principal Amount ($)</label>
+                                <input type="number" id="principal" class="form-input" placeholder="Enter principal amount" min="0" step="100">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="rate">Annual Interest Rate (%)</label>
+                                <input type="number" id="rate" class="form-input" placeholder="Enter annual rate" min="0" max="100" step="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="time">Time Period (Years)</label>
+                                <input type="number" id="time" class="form-input" placeholder="Enter time period" min="1" max="100" step="0.5">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="frequency">Compound Frequency</label>
+                                <select id="frequency" class="form-input">
+                                    <option value="1">Annually</option>
+                                    <option value="2">Semi-Annually</option>
+                                    <option value="4">Quarterly</option>
+                                    <option value="12" selected>Monthly</option>
+                                    <option value="365">Daily</option>
+                                </select>
+                            </div>
+                            
+                            <div class="calc-actions">
+                                <button class="btn btn-primary" onclick="calculateCompoundInterest()">Calculate</button>
+                                <button class="btn btn-secondary" onclick="resetCalculator()">Reset</button>
+                            </div>
+                            
+                            <div id="compound-result" class="calc-result">
+                                <h3>Compound Interest Result</h3>
+                                <p>Final Amount: <span class="result-value" id="final-amount"></span></p>
+                                <p>Interest Earned: <span id="interest-earned"></span></p>
+                                <p>Total Growth: <span id="growth-percentage"></span></p>
+                            </div>
+                        </div>
+                    `
+                },
+                mortgage: {
+                    title: "Mortgage Calculator",
+                    html: `
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label class="form-label" for="mortgage-amount">Mortgage Amount ($)</label>
+                                <input type="number" id="mortgage-amount" class="form-input" placeholder="Enter mortgage amount" min="0" step="1000">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="mortgage-rate">Annual Interest Rate (%)</label>
+                                <input type="number" id="mortgage-rate" class="form-input" placeholder="Enter interest rate" min="0" max="20" step="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="mortgage-term">Loan Term (Years)</label>
+                                <input type="number" id="mortgage-term" class="form-input" placeholder="Enter loan term" min="1" max="30" step="1">
+                            </div>
+                            
+                            <div class="calc-actions">
+                                <button class="btn btn-primary" onclick="calculateMortgage()">Calculate</button>
+                                <button class="btn btn-secondary" onclick="resetCalculator()">Reset</button>
+                            </div>
+                            
+                            <div id="mortgage-result" class="calc-result">
+                                <h3>Mortgage Calculation Result</h3>
+                                <p>Monthly Payment: <span class="result-value" id="mortgage-monthly"></span></p>
+                                <p>Total Interest: <span id="mortgage-interest"></span></p>
+                                <p>Total Payment: <span id="mortgage-total"></span></p>
+                            </div>
+                        </div>
+                    `
+                },
+                calorie: {
+                    title: "Calorie Calculator",
+                    html: `
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label class="form-label" for="calorie-age">Age</label>
+                                <input type="number" id="calorie-age" class="form-input" placeholder="Enter your age" min="15" max="100" step="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="calorie-gender">Gender</label>
+                                <select id="calorie-gender" class="form-input">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="calorie-weight">Weight (kg)</label>
+                                <input type="number" id="calorie-weight" class="form-input" placeholder="Enter your weight" min="30" max="200" step="0.1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="calorie-height">Height (cm)</label>
+                                <input type="number" id="calorie-height" class="form-input" placeholder="Enter your height" min="100" max="250" step="0.1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="calorie-activity">Activity Level</label>
+                                <select id="calorie-activity" class="form-input">
+                                    <option value="1.2">Sedentary (little or no exercise)</option>
+                                    <option value="1.375">Lightly active (light exercise 1-3 days/week)</option>
+                                    <option value="1.55">Moderately active (moderate exercise 3-5 days/week)</option>
+                                    <option value="1.725">Very active (hard exercise 6-7 days/week)</option>
+                                    <option value="1.9">Super active (very hard exercise & physical job)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="calc-actions">
+                                <button class="btn btn-primary" onclick="calculateCalorie()">Calculate</button>
+                                <button class="btn btn-secondary" onclick="resetCalculator()">Reset</button>
+                            </div>
+                            
+                            <div id="calorie-result" class="calc-result">
+                                <h3>Daily Calorie Needs</h3>
+                                <p>BMR: <span class="result-value" id="bmr-value"></span> calories/day</p>
+                                <p>Daily Calories: <span id="daily-calories"></span> calories/day</p>
+                            </div>
+                        </div>
+                    `
+                }
+            };
+            
+            return calculators[calcType] || calculators.loan;
+        }
+
+        // ===== Calculator Functions =====
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('loan-amount').value);
+            const rate = parseFloat(document.getElementById('interest-rate').value);
+            const years = parseFloat(document.getElementById('loan-term').value);
+            
+            if (!amount || !rate || !years) {
+                alert('Please enter all required values');
+                return;
+            }
+            
+            const monthlyRate = rate / 100 / 12;
+            const months = years * 12;
+            
+            // Monthly payment formula
+            const monthlyPayment = (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                                   (Math.pow(1 + monthlyRate, months) - 1);
+            const totalPayment = monthlyPayment * months;
+            const totalInterest = totalPayment - amount;
+            
+            // Display results
+            document.getElementById('monthly-payment').textContent = `$${monthlyPayment.toFixed(2)}`;
+            document.getElementById('total-interest').textContent = `$${totalInterest.toFixed(2)}`;
+            document.getElementById('total-payment').textContent = `$${totalPayment.toFixed(2)}`;
+            document.getElementById('loan-result').classList.add('show');
+        }
+        
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value) / 100; // Convert cm to meters
+            
+            if (!weight || !height) {
+                alert('Please enter both weight and height');
+                return;
+            }
+            
+            const bmi = weight / (height * height);
+            let category, status;
+            
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                status = 'You may need to gain weight';
+            } else if (bmi < 25) {
+                category = 'Normal weight';
+                status = 'Healthy weight range';
+            } else if (bmi < 30) {
+                category = 'Overweight';
+                status = 'Consider weight management';
+            } else {
+                category = 'Obese';
+                status = 'Consult with a healthcare provider';
+            }
+            
+            document.getElementById('bmi-value').textContent = bmi.toFixed(1);
+            document.getElementById('bmi-category').textContent = category;
+            document.getElementById('bmi-status').textContent = status;
+            document.getElementById('bmi-result').classList.add('show');
+        }
+        
+        function updatePercentageMode() {
+            const mode = document.getElementById('percentage-mode').value;
+            const label1 = document.getElementById('label-1');
+            const label2 = document.getElementById('label-2');
+            const input1 = document.getElementById('input-1');
+            const input2 = document.getElementById('input-2');
+            
+            switch(mode) {
+                case 'percent-of':
+                    label1.textContent = 'Percentage (%)';
+                    label2.textContent = 'Base Value';
+                    input1.placeholder = 'Enter percentage';
+                    input2.placeholder = 'Enter base value';
+                    break;
+                case 'what-percent':
+                    label1.textContent = 'Part Value';
+                    label2.textContent = 'Whole Value';
+                    input1.placeholder = 'Enter part value';
+                    input2.placeholder = 'Enter whole value';
+                    break;
+                case 'percentage-change':
+                    label1.textContent = 'Original Value';
+                    label2.textContent = 'New Value';
+                    input1.placeholder = 'Enter original value';
+                    input2.placeholder = 'Enter new value';
+                    break;
+            }
+        }
+        
+        function calculatePercentage() {
+            const mode = document.getElementById('percentage-mode').value;
+            const value1 = parseFloat(document.getElementById('input-1').value);
+            const value2 = parseFloat(document.getElementById('input-2').value);
+            
+            if (!value1 || !value2) {
+                alert('Please enter both values');
+                return;
+            }
+            
+            let result;
+            
+            switch(mode) {
+                case 'percent-of':
+                    result = (value1 * value2) / 100;
+                    document.getElementById('percentage-answer').textContent = 
+                        `${value1}% of ${value2} = ${result.toFixed(2)}`;
+                    break;
+                case 'what-percent':
+                    result = (value1 / value2) * 100;
+                    document.getElementById('percentage-answer').textContent = 
+                        `${value1} is ${result.toFixed(2)}% of ${value2}`;
+                    break;
+                case 'percentage-change':
+                    result = ((value2 - value1) / Math.abs(value1)) * 100;
+                    const direction = result >= 0 ? 'increase' : 'decrease';
+                    document.getElementById('percentage-answer').textContent = 
+                        `${Math.abs(result).toFixed(2)}% ${direction}`;
+                    break;
+            }
+            
+            document.getElementById('percentage-result').classList.add('show');
+        }
+        
+        function calculateCompoundInterest() {
+            const principal = parseFloat(document.getElementById('principal').value);
+            const rate = parseFloat(document.getElementById('rate').value) / 100;
+            const time = parseFloat(document.getElementById('time').value);
+            const frequency = parseInt(document.getElementById('frequency').value);
+            
+            if (!principal || !rate || !time) {
+                alert('Please enter all required values');
+                return;
+            }
+            
+            // Compound interest formula: A = P(1 + r/n)^(nt)
+            const amount = principal * Math.pow(1 + rate / frequency, frequency * time);
+            const interest = amount - principal;
+            const growth = (interest / principal) * 100;
+            
+            document.getElementById('final-amount').textContent = `$${amount.toFixed(2)}`;
+            document.getElementById('interest-earned').textContent = `$${interest.toFixed(2)}`;
+            document.getElementById('growth-percentage').textContent = `${growth.toFixed(2)}%`;
+            document.getElementById('compound-result').classList.add('show');
+        }
+        
+        function calculateMortgage() {
+            const amount = parseFloat(document.getElementById('mortgage-amount').value);
+            const rate = parseFloat(document.getElementById('mortgage-rate').value);
+            const years = parseFloat(document.getElementById('mortgage-term').value);
+            
+            if (!amount || !rate || !years) {
+                alert('Please enter all required values');
+                return;
+            }
+            
+            const monthlyRate = rate / 100 / 12;
+            const months = years * 12;
+            
+            // Mortgage payment formula
+            const monthlyPayment = (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                                   (Math.pow(1 + monthlyRate, months) - 1);
+            const totalPayment = monthlyPayment * months;
+            const totalInterest = totalPayment - amount;
+            
+            document.getElementById('mortgage-monthly').textContent = `$${monthlyPayment.toFixed(2)}`;
+            document.getElementById('mortgage-interest').textContent = `$${totalInterest.toFixed(2)}`;
+            document.getElementById('mortgage-total').textContent = `$${totalPayment.toFixed(2)}`;
+            document.getElementById('mortgage-result').classList.add('show');
+        }
+        
+        function calculateCalorie() {
+            const age = parseFloat(document.getElementById('calorie-age').value);
+            const gender = document.getElementById('calorie-gender').value;
+            const weight = parseFloat(document.getElementById('calorie-weight').value);
+            const height = parseFloat(document.getElementById('calorie-height').value);
+            const activity = parseFloat(document.getElementById('calorie-activity').value);
+            
+            if (!age || !weight || !height) {
+                alert('Please enter all required values');
+                return;
+            }
+            
+            // BMR calculation using Mifflin-St Jeor Equation
+            let bmr;
+            if (gender === 'male') {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+            
+            const dailyCalories = bmr * activity;
+            
+            document.getElementById('bmr-value').textContent = Math.round(bmr);
+            document.getElementById('daily-calories').textContent = Math.round(dailyCalories);
+            document.getElementById('calorie-result').classList.add('show');
+        }
+        
+        function resetCalculator() {
+            // Reset all inputs in the current calculator
+            const calculatorForm = document.querySelector('.calculator-form');
+            if (calculatorForm) {
+                const inputs = calculatorForm.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    if (input.type === 'number') {
+                        input.value = '';
+                    } else if (input.type === 'select-one') {
+                        input.selectedIndex = 0;
+                    }
+                });
+            }
+            
+            // Hide any visible results
+            document.querySelectorAll('.calc-result').forEach(result => {
+                result.classList.remove('show');
+            });
+        }
+
+        // ===== Initialize Everything =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            initMobileMenu();
+            initCalculatorFilter();
+            initModal();
+            
+            // Add click event to calculator cards
+            document.querySelectorAll('.calc-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const calcType = this.getAttribute('data-calc');
+                    openCalculator(calcType);
+                });
+            });
+            
+            // Add click event to footer calculator links
+            document.querySelectorAll('.footer-links a[onclick*="openCalculator"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const onclick = this.getAttribute('onclick');
+                    const match = onclick.match(/openCalculator\('(.+?)'\)/);
+                    if (match) {
+                        openCalculator(match[1]);
+                    }
+                });
+            });
+            
+            // Add click event to other footer modal links
+            document.querySelectorAll('.footer-links a[onclick*="openModal"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const onclick = this.getAttribute('onclick');
+                    const match = onclick.match(/openModal\('(.+?)'\)/);
+                    if (match) {
+                        openModal(match[1]);
+                    }
+                });
+            });
+            
+            // Add smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') return;
+                    if (this.getAttribute('onclick')) return; // Skip if it has onclick handler
+                    
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>
